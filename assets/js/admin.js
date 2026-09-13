@@ -278,7 +278,20 @@
 		return true;
 	}
 
-	function renderMessages( messages ) {
+	function scrollMessages( smooth ) {
+		if ( smooth && 'scrollTo' in el.messages ) {
+			try {
+				el.messages.scrollTo( { top: el.messages.scrollHeight, behavior: 'smooth' } );
+				return;
+			} catch ( e ) {
+				// مرورگر قدیمی: به حالت ساده برمی‌گردیم.
+			}
+		}
+
+		el.messages.scrollTop = el.messages.scrollHeight;
+	}
+
+	function renderMessages( messages, initial ) {
 		var added = false;
 
 		messages.forEach( function ( message ) {
@@ -288,7 +301,7 @@
 		} );
 
 		if ( added ) {
-			el.messages.scrollTop = el.messages.scrollHeight;
+			scrollMessages( ! initial );
 		}
 
 		return added;
@@ -351,7 +364,7 @@
 			state.current = response.conversation;
 			setHeader( response.conversation );
 
-			if ( renderMessages( response.messages ) ) {
+			if ( renderMessages( response.messages, 0 === state.lastId ) ) {
 				loadList();
 			}
 		} ).catch( function () {
@@ -435,9 +448,18 @@
 			return;
 		}
 
-		request( '/conversations/' + state.current.id, { method: 'DELETE' } ).then( function () {
+		var id = state.current.id;
+
+		request( '/conversations/' + id, { method: 'DELETE' } ).then( function () {
+			var row = el.list.querySelector( 'li[data-id="' + id + '"]' );
+
+			// ردیف قبل از رفتن محو می‌شود تا حذف شدنش دیده شود.
+			if ( row ) {
+				row.classList.add( 'cs-removing' );
+			}
+
 			closeThread();
-			loadList();
+			window.setTimeout( loadList, row ? 220 : 0 );
 		} );
 	} );
 

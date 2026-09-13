@@ -25,9 +25,6 @@
 	position: fixed;
 	bottom: 20px;
 	z-index: 999998;
-	display: flex;
-	align-items: center;
-	gap: 8px;
 	padding: 0;
 	width: 56px;
 	height: 56px;
@@ -37,19 +34,70 @@
 	color: var(--cs-on-color);
 	cursor: pointer;
 	box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
-	transition: transform .15s ease;
 	font: inherit;
 	line-height: 0;
+	transition: transform .18s cubic-bezier(.2, .8, .3, 1.1), box-shadow .18s ease;
+}
+
+/* کلاس جداست و بعد از پخش برداشته می‌شود، تا با تعویض کلاس‌های دیگر دوباره اجرا نشود. */
+.cs-launcher.cs-launcher-enter {
+	animation: cs-launcher-in .4s cubic-bezier(.2, .8, .3, 1.15) backwards;
+}
+
+@keyframes cs-launcher-in {
+	from { opacity: 0; transform: scale(.4) translateY(14px); }
 }
 
 .cs-launcher:hover {
-	transform: scale(1.06);
+	transform: scale(1.08);
+	box-shadow: 0 8px 26px rgba(0, 0, 0, .28);
+}
+
+.cs-launcher:active {
+	transform: scale(.93);
+}
+
+/* تکان کوتاه وقتی پیام تازه می‌رسد و پنجره بسته است. */
+.cs-launcher.cs-nudge {
+	animation: cs-nudge .7s ease;
+}
+
+@keyframes cs-nudge {
+	0%, 100% { transform: none; }
+	20% { transform: translateY(-7px) scale(1.06); }
+	40% { transform: translateY(0) scale(1); }
+	60% { transform: translateY(-4px) scale(1.03); }
+	80% { transform: none; }
+}
+
+/* دو آیکون روی هم؛ با باز شدن پنجره جایشان را با چرخش عوض می‌کنند. */
+.cs-icon {
+	position: absolute;
+	inset: 0;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	transition: opacity .2s ease, transform .28s cubic-bezier(.2, .8, .3, 1.1);
+}
+
+.cs-icon-close {
+	opacity: 0;
+	transform: rotate(-90deg) scale(.5);
+}
+
+.cs-launcher-open .cs-icon-chat {
+	opacity: 0;
+	transform: rotate(90deg) scale(.5);
+}
+
+.cs-launcher-open .cs-icon-close {
+	opacity: 1;
+	transform: none;
 }
 
 .cs-launcher svg {
 	width: 26px;
 	height: 26px;
-	margin: auto;
 	fill: currentColor;
 }
 
@@ -70,6 +118,13 @@
 	line-height: 20px;
 	text-align: center;
 	font-family: Tahoma, sans-serif;
+	animation: cs-pop .32s cubic-bezier(.2, .8, .3, 1.4) both;
+}
+
+@keyframes cs-pop {
+	from { opacity: 0; transform: scale(0); }
+	60% { transform: scale(1.18); }
+	to { opacity: 1; transform: scale(1); }
 }
 
 .cs-panel {
@@ -90,10 +145,18 @@
 	font-family: Tahoma, IRANSans, Vazirmatn, -apple-system, "Segoe UI", sans-serif;
 	font-size: 14px;
 	line-height: 1.7;
+	opacity: 0;
+	transform: translateY(14px) scale(.96);
+	transition: opacity .2s ease, transform .22s cubic-bezier(.2, .8, .3, 1.05);
 }
 
-.cs-pos-right .cs-panel { right: 20px; }
-.cs-pos-left .cs-panel { left: 20px; }
+.cs-panel.cs-panel-open {
+	opacity: 1;
+	transform: none;
+}
+
+.cs-pos-right .cs-panel { right: 20px; transform-origin: bottom right; }
+.cs-pos-left .cs-panel { left: 20px; transform-origin: bottom left; }
 
 .cs-header {
 	display: flex;
@@ -127,7 +190,11 @@
 	font-size: 18px;
 	line-height: 1;
 	cursor: pointer;
+	transition: background .15s ease, transform .15s ease;
 }
+
+.cs-close:hover { background: rgba(255, 255, 255, .3); }
+.cs-close:active { transform: scale(.9); }
 
 .cs-body {
 	flex: 1;
@@ -141,6 +208,12 @@
 	flex-direction: column;
 	max-width: 82%;
 	margin-bottom: 10px;
+	animation: cs-msg-in .28s cubic-bezier(.2, .8, .3, 1.05) both;
+}
+
+/* پیام از سمت خودش می‌آید: مال بازدیدکننده از یک طرف، مال پشتیبان از طرف دیگر. */
+@keyframes cs-msg-in {
+	from { opacity: 0; transform: translateY(10px) scale(.96); }
 }
 
 .cs-msg-visitor { margin-inline-start: auto; align-items: flex-end; }
@@ -171,6 +244,7 @@
 }
 
 .cs-welcome {
+	animation: cs-msg-in .3s ease both;
 	margin-bottom: 12px;
 	padding: 10px 12px;
 	border-radius: 12px;
@@ -179,7 +253,10 @@
 	font-size: 13px;
 }
 
-.cs-form { padding: 14px; }
+.cs-form {
+	padding: 14px;
+	animation: cs-msg-in .3s ease both;
+}
 
 .cs-form p {
 	margin: 0 0 10px;
@@ -197,6 +274,11 @@
 	background: #fff;
 	color: var(--cs-text);
 	font: inherit;
+	transition: border-color .15s ease, box-shadow .15s ease;
+}
+
+.cs-form input:hover {
+	border-color: #c7cbd3;
 }
 
 .cs-form input:focus,
@@ -215,12 +297,25 @@
 	font: inherit;
 	font-weight: 700;
 	cursor: pointer;
+	transition: transform .14s ease, filter .14s ease;
 }
+
+.cs-btn:hover { filter: brightness(1.08); }
+.cs-btn:active { transform: scale(.97); }
 
 .cs-error {
 	margin: 0 0 10px;
 	color: #dc2626;
 	font-size: 12px;
+	animation: cs-shake .4s ease both;
+}
+
+@keyframes cs-shake {
+	from { opacity: 0; }
+	25% { transform: translateX(-4px); }
+	50% { transform: translateX(4px); }
+	75% { transform: translateX(-2px); }
+	to { opacity: 1; transform: none; }
 }
 
 .cs-footer {
@@ -230,6 +325,7 @@
 	padding: 10px;
 	border-top: 1px solid var(--cs-border);
 	background: var(--cs-bg);
+	animation: cs-msg-in .3s ease both;
 }
 
 .cs-input {
@@ -242,6 +338,7 @@
 	color: var(--cs-text);
 	font: inherit;
 	resize: none;
+	transition: border-color .15s ease, height .12s ease;
 }
 
 .cs-send {
@@ -254,6 +351,17 @@
 	color: var(--cs-on-color);
 	cursor: pointer;
 	line-height: 0;
+	transition: transform .14s ease, opacity .15s ease, filter .14s ease;
+}
+
+.cs-send:hover:not(:disabled) { filter: brightness(1.1); }
+.cs-send:active:not(:disabled) { transform: scale(.88); }
+
+/* تا وقتی پیام در راه است، فلش نبض می‌زند. */
+.cs-send:disabled svg { animation: cs-pulse .9s ease-in-out infinite; }
+
+@keyframes cs-pulse {
+	50% { opacity: .35; }
 }
 
 .cs-send svg { width: 18px; height: 18px; margin: auto; fill: currentColor; }
@@ -275,8 +383,24 @@
 
 	.cs-pos-right .cs-panel,
 	.cs-pos-left .cs-panel { right: 0; left: 0; }
+
+	.cs-panel {
+		transform: translateY(100%);
+		transition: transform .26s cubic-bezier(.2, .8, .3, 1), opacity .2s ease;
+	}
+
+	.cs-panel.cs-panel-open { transform: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
-	.cs-launcher { transition: none; }
+	#chat-support-root *,
+	#chat-support-root *::before,
+	#chat-support-root *::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+	}
+
+	/* پنجره باید بدون انیمیشن هم درست دیده شود. */
+	.cs-panel { opacity: 1; transform: none; }
 }

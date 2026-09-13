@@ -22,10 +22,24 @@
 	height: 9px;
 	border-radius: 50%;
 	background: #16a34a;
-	transition: opacity .3s ease;
+	transition: opacity .3s ease, transform .3s ease;
 }
 
-.cs-live.cs-blink { opacity: .25; }
+/* با هر بار به‌روزرسانی فهرست یک نبض می‌زند تا معلوم باشد زنده است. */
+.cs-live.cs-blink {
+	opacity: .25;
+	transform: scale(1.6);
+}
+
+@keyframes cs-fade-in {
+	from { opacity: 0; transform: translateY(6px); }
+}
+
+@keyframes cs-pop-in {
+	from { opacity: 0; transform: scale(0); }
+	60% { transform: scale(1.18); }
+	to { opacity: 1; transform: scale(1); }
+}
 
 .cs-inbox {
 	display: flex;
@@ -68,9 +82,21 @@
 	padding: 10px 12px;
 	border-bottom: 1px solid #f0f0f1;
 	cursor: pointer;
+	animation: cs-fade-in .25s ease both;
+	transition: background .15s ease, box-shadow .2s ease;
+}
+
+.cs-list li.cs-removing {
+	animation: cs-row-out .22s ease both;
+	pointer-events: none;
+}
+
+@keyframes cs-row-out {
+	to { opacity: 0; transform: translateY(-6px); }
 }
 
 .cs-list li:hover { background: #f6f7f7; }
+.cs-list li:active { background: #eef1f3; }
 .cs-list li.cs-active { background: #f0f6fc; box-shadow: inset 3px 0 0 var(--cs-blue); }
 .cs-list li.cs-empty { color: var(--cs-muted); cursor: default; text-align: center; padding: 20px; }
 .cs-list li.cs-empty:hover { background: none; }
@@ -116,6 +142,7 @@
 	font-size: 11px;
 	line-height: 18px;
 	text-align: center;
+	animation: cs-pop-in .32s cubic-bezier(.2, .8, .3, 1.4) both;
 }
 
 .cs-tag-closed {
@@ -144,12 +171,18 @@
 	justify-content: center;
 	height: 100%;
 	color: var(--cs-muted);
+	animation: cs-fade-in .25s ease both;
 }
 
 .cs-thread {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
+	animation: cs-thread-in .28s cubic-bezier(.2, .8, .3, 1.02) both;
+}
+
+@keyframes cs-thread-in {
+	from { opacity: 0; transform: scale(.99) translateY(8px); }
 }
 
 .cs-thread-head {
@@ -181,6 +214,19 @@
 
 .cs-danger { color: #b32d2e !important; }
 
+.cs-wrap .button {
+	transition: transform .12s ease, background .15s ease, border-color .15s ease;
+}
+
+.cs-wrap .button:active { transform: scale(.95); }
+
+/* تا وقتی پاسخ در راه است، دکمه نبض می‌زند. */
+.cs-wrap .button:disabled { animation: cs-btn-pulse .9s ease-in-out infinite; }
+
+@keyframes cs-btn-pulse {
+	50% { opacity: .55; }
+}
+
 .cs-back {
 	display: none;
 	flex-shrink: 0;
@@ -190,7 +236,10 @@
 	background: #fff;
 	font-size: 12px;
 	cursor: pointer;
+	transition: transform .12s ease, background .15s ease;
 }
+
+.cs-back:active { transform: scale(.94); }
 
 .cs-messages {
 	flex: 1;
@@ -202,6 +251,7 @@
 .cs-m {
 	max-width: 70%;
 	margin-bottom: 10px;
+	animation: cs-fade-in .26s cubic-bezier(.2, .8, .3, 1.05) both;
 }
 
 .cs-m-visitor { margin-inline-end: auto; }
@@ -246,6 +296,7 @@
 	flex: 1;
 	max-height: 140px;
 	resize: vertical;
+	transition: border-color .15s ease, box-shadow .15s ease;
 }
 
 .cs-help-box {
@@ -263,6 +314,16 @@
 }
 
 /* --- موبایل --- */
+
+@media (prefers-reduced-motion: reduce) {
+	.cs-wrap *,
+	.cs-wrap *::before,
+	.cs-wrap *::after {
+		animation-duration: .01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: .01ms !important;
+	}
+}
 
 @media screen and (max-width: 782px) {
 	.cs-inbox {

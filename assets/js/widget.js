@@ -24,7 +24,8 @@
 		unread: 0,
 		started: false,
 		sending: false,
-		timer: null
+		timer: null,
+		animTimer: null
 	};
 
 	var el = {};
@@ -133,7 +134,9 @@
 		button.type = 'button';
 		button.setAttribute( 'aria-label', data.i18n.open );
 		button.title = data.i18n.open;
-		button.innerHTML = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.99 3 3 6.36 3 10.5c0 2.3 1.24 4.35 3.2 5.72-.14 1.16-.6 2.2-1.36 3.1-.2.24-.06.6.25.64 1.9.22 3.62-.42 4.94-1.4.94.22 1.94.34 2.97.34 5.01 0 9-3.36 9-7.5S17.01 3 12 3z"/></svg>';
+		button.innerHTML =
+			'<span class="cs-icon cs-icon-chat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3C6.99 3 3 6.36 3 10.5c0 2.3 1.24 4.35 3.2 5.72-.14 1.16-.6 2.2-1.36 3.1-.2.24-.06.6.25.64 1.9.22 3.62-.42 4.94-1.4.94.22 1.94.34 2.97.34 5.01 0 9-3.36 9-7.5S17.01 3 12 3z"/></svg></span>' +
+			'<span class="cs-icon cs-icon-close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M19 6.41 17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></svg></span>';
 
 		el.badge = make( 'span', 'cs-badge' );
 		el.badge.hidden = true;
@@ -271,7 +274,16 @@
 		el.body.appendChild( wrap );
 	}
 
-	function scrollDown() {
+	function scrollDown( smooth ) {
+		if ( smooth && 'scrollTo' in el.body ) {
+			try {
+				el.body.scrollTo( { top: el.body.scrollHeight, behavior: 'smooth' } );
+				return;
+			} catch ( e ) {
+				// مرورگر قدیمی: به حالت ساده برمی‌گردیم.
+			}
+		}
+
 		el.body.scrollTop = el.body.scrollHeight;
 	}
 
@@ -281,20 +293,39 @@
 		}
 
 		messages.forEach( appendMessage );
-		scrollDown();
+		scrollDown( state.started );
 
 		return true;
 	}
 
 	function setUnread( count ) {
+		var isNew = count > state.unread;
+
 		state.unread = count;
 
 		if ( count > 0 && ! state.open ) {
 			el.badge.textContent = count > 9 ? '+9' : String( count );
 			el.badge.hidden = false;
+
+			if ( isNew ) {
+				nudgeLauncher();
+			}
 		} else {
 			el.badge.hidden = true;
 		}
+	}
+
+	/** یک تکان کوتاه تا کاربر متوجه پیام تازه شود. */
+	function nudgeLauncher() {
+		el.launcher.classList.remove( 'cs-nudge' );
+
+		// خواندن offsetWidth انیمیشن را از اول اجرا می‌کند حتی اگر کلاس قبلاً بوده باشد.
+		void el.launcher.offsetWidth;
+		el.launcher.classList.add( 'cs-nudge' );
+
+		window.setTimeout( function () {
+			el.launcher.classList.remove( 'cs-nudge' );
+		}, 700 );
 	}
 
 	function showChatUi() {
@@ -439,9 +470,37 @@
 	/* باز و بسته کردن                                                   */
 	/* ---------------------------------------------------------------- */
 
+	/**
+	 * پنجره را با انیمیشن باز یا بسته می‌کند.
+	 *
+	 * صفت hidden باعث display:none می‌شود و انیمیشن را می‌کشد، پس هنگام باز شدن
+	 * اول آن را برمی‌داریم و یک فریم بعد کلاس را می‌زنیم، و هنگام بستن برعکس.
+	 */
+	function setPanelVisible( visible ) {
+		window.clearTimeout( state.animTimer );
+
+		if ( visible ) {
+			el.panel.hidden = false;
+			el.launcher.classList.add( 'cs-launcher-open' );
+			el.launcher.setAttribute( 'aria-label', data.i18n.close );
+
+			window.requestAnimationFrame( function () {
+				el.panel.classList.add( 'cs-panel-open' );
+			} );
+		} else {
+			el.panel.classList.remove( 'cs-panel-open' );
+			el.launcher.classList.remove( 'cs-launcher-open' );
+			el.launcher.setAttribute( 'aria-label', data.i18n.open );
+
+			state.animTimer = window.setTimeout( function () {
+				el.panel.hidden = true;
+			}, 260 );
+		}
+	}
+
 	function toggle() {
 		state.open = ! state.open;
-		el.panel.hidden = ! state.open;
+		setPanelVisible( state.open );
 
 		if ( state.open ) {
 			setUnread( 0 );
@@ -480,6 +539,12 @@
 
 		root.appendChild( el.panel );
 		root.appendChild( el.launcher );
+
+		// انیمیشن ورود فقط یک بار؛ بعد برداشته می‌شود تا مزاحم انیمیشن‌های بعدی نشود.
+		el.launcher.classList.add( 'cs-launcher-enter' );
+		window.setTimeout( function () {
+			el.launcher.classList.remove( 'cs-launcher-enter' );
+		}, 450 );
 
 		state.token = store( STORAGE_KEY );
 
