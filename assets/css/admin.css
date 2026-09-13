@@ -1,0 +1,289 @@
+/* پنل گفتگوها — دو ستونی روی دسکتاپ، تک‌ستونی روی موبایل. */
+
+.cs-wrap {
+	--cs-border: #dcdcde;
+	--cs-muted: #646970;
+	--cs-blue: #2271b1;
+}
+
+.cs-wrap [hidden] {
+	display: none !important;
+}
+
+.cs-page-title {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+.cs-live {
+	display: inline-block;
+	width: 9px;
+	height: 9px;
+	border-radius: 50%;
+	background: #16a34a;
+	transition: opacity .3s ease;
+}
+
+.cs-live.cs-blink { opacity: .25; }
+
+.cs-inbox {
+	display: flex;
+	gap: 16px;
+	margin-top: 14px;
+	height: calc(100vh - 180px);
+	min-height: 420px;
+}
+
+/* --- فهرست گفتگوها --- */
+
+.cs-list-pane {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 320px;
+	border: 1px solid var(--cs-border);
+	border-radius: 6px;
+	background: #fff;
+	overflow: hidden;
+}
+
+.cs-list-tools {
+	display: flex;
+	gap: 6px;
+	padding: 8px;
+	border-bottom: 1px solid var(--cs-border);
+}
+
+.cs-search { flex: 1; min-width: 0; }
+
+.cs-list {
+	flex: 1;
+	margin: 0;
+	overflow-y: auto;
+	list-style: none;
+}
+
+.cs-list li {
+	margin: 0;
+	padding: 10px 12px;
+	border-bottom: 1px solid #f0f0f1;
+	cursor: pointer;
+}
+
+.cs-list li:hover { background: #f6f7f7; }
+.cs-list li.cs-active { background: #f0f6fc; box-shadow: inset 3px 0 0 var(--cs-blue); }
+.cs-list li.cs-empty { color: var(--cs-muted); cursor: default; text-align: center; padding: 20px; }
+.cs-list li.cs-empty:hover { background: none; }
+
+.cs-item-top {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	margin-bottom: 3px;
+}
+
+.cs-item-name {
+	flex: 1;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	font-weight: 600;
+}
+
+.cs-item-time {
+	flex-shrink: 0;
+	color: var(--cs-muted);
+	font-size: 11px;
+}
+
+.cs-item-preview {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: var(--cs-muted);
+	font-size: 12px;
+}
+
+.cs-dot {
+	flex-shrink: 0;
+	min-width: 18px;
+	height: 18px;
+	padding: 0 5px;
+	border-radius: 9px;
+	background: #d63638;
+	color: #fff;
+	font-size: 11px;
+	line-height: 18px;
+	text-align: center;
+}
+
+.cs-tag-closed {
+	flex-shrink: 0;
+	padding: 1px 6px;
+	border-radius: 9px;
+	background: #f0f0f1;
+	color: var(--cs-muted);
+	font-size: 11px;
+}
+
+/* --- گفتگو --- */
+
+.cs-thread-pane {
+	flex: 1;
+	min-width: 0;
+	border: 1px solid var(--cs-border);
+	border-radius: 6px;
+	background: #fff;
+	overflow: hidden;
+}
+
+.cs-thread-empty {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	height: 100%;
+	color: var(--cs-muted);
+}
+
+.cs-thread {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.cs-thread-head {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 10px 14px;
+	border-bottom: 1px solid var(--cs-border);
+	background: #fbfbfc;
+}
+
+.cs-thread-who { flex: 1; min-width: 0; }
+.cs-thread-who strong { display: block; }
+
+.cs-thread-who span {
+	display: block;
+	color: var(--cs-muted);
+	font-size: 12px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+.cs-thread-actions {
+	display: flex;
+	flex-shrink: 0;
+	gap: 6px;
+}
+
+.cs-danger { color: #b32d2e !important; }
+
+.cs-back {
+	display: none;
+	flex-shrink: 0;
+	padding: 3px 10px;
+	border: 1px solid var(--cs-border);
+	border-radius: 4px;
+	background: #fff;
+	font-size: 12px;
+	cursor: pointer;
+}
+
+.cs-messages {
+	flex: 1;
+	padding: 14px;
+	overflow-y: auto;
+	background: #f6f7f7;
+}
+
+.cs-m {
+	max-width: 70%;
+	margin-bottom: 10px;
+}
+
+.cs-m-visitor { margin-inline-end: auto; }
+.cs-m-admin { margin-inline-start: auto; }
+
+.cs-m-bubble {
+	padding: 8px 12px;
+	border: 1px solid var(--cs-border);
+	border-radius: 10px;
+	background: #fff;
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+	line-height: 1.8;
+}
+
+.cs-m-admin .cs-m-bubble {
+	border-color: transparent;
+	background: var(--cs-blue);
+	color: #fff;
+}
+
+.cs-m-admin .cs-m-bubble a { color: #fff; }
+
+.cs-m-meta {
+	margin-top: 3px;
+	color: var(--cs-muted);
+	font-size: 11px;
+}
+
+.cs-m-admin .cs-m-meta { text-align: end; }
+
+.cs-reply {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+	padding: 10px;
+	border-top: 1px solid var(--cs-border);
+}
+
+.cs-reply textarea {
+	flex: 1;
+	max-height: 140px;
+	resize: vertical;
+}
+
+.cs-help-box {
+	max-width: 700px;
+	margin-top: 24px;
+	padding: 4px 18px 14px;
+	border: 1px solid var(--cs-border);
+	border-radius: 6px;
+	background: #fff;
+}
+
+.cs-help-box code {
+	display: inline-block;
+	word-break: break-all;
+}
+
+/* --- موبایل --- */
+
+@media screen and (max-width: 782px) {
+	.cs-inbox {
+		height: calc(100vh - 200px);
+		gap: 0;
+	}
+
+	.cs-list-pane { flex: 1 1 auto; }
+
+	.cs-thread-pane { display: none; }
+
+	/* وقتی گفتگویی باز است، فقط همان نمایش داده می‌شود. */
+	.cs-inbox.cs-mobile-thread .cs-list-pane { display: none; }
+	.cs-inbox.cs-mobile-thread .cs-thread-pane { display: block; }
+
+	.cs-back { display: block; }
+
+	.cs-m { max-width: 88%; }
+
+	.cs-thread-actions .button {
+		padding: 0 8px;
+		font-size: 12px;
+	}
+}

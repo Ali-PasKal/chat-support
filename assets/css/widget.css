@@ -1,0 +1,282 @@
+/* ویجت چت پشتیبانی — همه چیز زیر #chat-support-root تا با قالب سایت قاطی نشود. */
+
+#chat-support-root {
+	--cs-color: #2563eb;
+	--cs-on-color: #fff;
+	--cs-bg: #fff;
+	--cs-text: #1f2430;
+	--cs-muted: #6b7280;
+	--cs-border: #e5e7eb;
+	--cs-visitor-bg: #eef2ff;
+}
+
+#chat-support-root *,
+#chat-support-root *::before,
+#chat-support-root *::after {
+	box-sizing: border-box;
+}
+
+/* بدون این، قانون‌های display پایین‌تر صفت hidden را بی‌اثر می‌کنند. */
+#chat-support-root [hidden] {
+	display: none !important;
+}
+
+.cs-launcher {
+	position: fixed;
+	bottom: 20px;
+	z-index: 999998;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0;
+	width: 56px;
+	height: 56px;
+	border: 0;
+	border-radius: 50%;
+	background: var(--cs-color);
+	color: var(--cs-on-color);
+	cursor: pointer;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, .22);
+	transition: transform .15s ease;
+	font: inherit;
+	line-height: 0;
+}
+
+.cs-launcher:hover {
+	transform: scale(1.06);
+}
+
+.cs-launcher svg {
+	width: 26px;
+	height: 26px;
+	margin: auto;
+	fill: currentColor;
+}
+
+.cs-pos-right .cs-launcher { right: 20px; }
+.cs-pos-left .cs-launcher { left: 20px; }
+
+.cs-badge {
+	position: absolute;
+	top: -2px;
+	inset-inline-end: -2px;
+	min-width: 20px;
+	height: 20px;
+	padding: 0 5px;
+	border-radius: 10px;
+	background: #ef4444;
+	color: #fff;
+	font-size: 12px;
+	line-height: 20px;
+	text-align: center;
+	font-family: Tahoma, sans-serif;
+}
+
+.cs-panel {
+	position: fixed;
+	bottom: 88px;
+	z-index: 999999;
+	display: flex;
+	flex-direction: column;
+	width: 350px;
+	max-width: calc(100vw - 32px);
+	height: 480px;
+	max-height: calc(100vh - 120px);
+	overflow: hidden;
+	border-radius: 14px;
+	background: var(--cs-bg);
+	color: var(--cs-text);
+	box-shadow: 0 12px 40px rgba(0, 0, 0, .25);
+	font-family: Tahoma, IRANSans, Vazirmatn, -apple-system, "Segoe UI", sans-serif;
+	font-size: 14px;
+	line-height: 1.7;
+}
+
+.cs-pos-right .cs-panel { right: 20px; }
+.cs-pos-left .cs-panel { left: 20px; }
+
+.cs-header {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 14px 16px;
+	background: var(--cs-color);
+	color: var(--cs-on-color);
+}
+
+.cs-header-text { flex: 1; min-width: 0; }
+
+.cs-header strong {
+	display: block;
+	font-size: 15px;
+	font-weight: 700;
+}
+
+.cs-header span {
+	display: block;
+	font-size: 12px;
+	opacity: .85;
+}
+
+.cs-close {
+	padding: 4px 8px;
+	border: 0;
+	border-radius: 6px;
+	background: rgba(255, 255, 255, .18);
+	color: inherit;
+	font-size: 18px;
+	line-height: 1;
+	cursor: pointer;
+}
+
+.cs-body {
+	flex: 1;
+	overflow-y: auto;
+	padding: 14px;
+	background: #f8fafc;
+}
+
+.cs-msg {
+	display: flex;
+	flex-direction: column;
+	max-width: 82%;
+	margin-bottom: 10px;
+}
+
+.cs-msg-visitor { margin-inline-start: auto; align-items: flex-end; }
+.cs-msg-admin { margin-inline-end: auto; align-items: flex-start; }
+
+.cs-bubble {
+	padding: 8px 12px;
+	border-radius: 12px;
+	background: #fff;
+	border: 1px solid var(--cs-border);
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-wrap: anywhere;
+}
+
+.cs-msg-visitor .cs-bubble {
+	background: var(--cs-color);
+	border-color: transparent;
+	color: var(--cs-on-color);
+}
+
+.cs-bubble a { color: inherit; text-decoration: underline; }
+
+.cs-meta {
+	margin-top: 3px;
+	font-size: 11px;
+	color: var(--cs-muted);
+}
+
+.cs-welcome {
+	margin-bottom: 12px;
+	padding: 10px 12px;
+	border-radius: 12px;
+	background: var(--cs-visitor-bg);
+	color: var(--cs-text);
+	font-size: 13px;
+}
+
+.cs-form { padding: 14px; }
+
+.cs-form p {
+	margin: 0 0 10px;
+	color: var(--cs-muted);
+	font-size: 13px;
+}
+
+.cs-form input {
+	display: block;
+	width: 100%;
+	margin-bottom: 10px;
+	padding: 9px 11px;
+	border: 1px solid var(--cs-border);
+	border-radius: 8px;
+	background: #fff;
+	color: var(--cs-text);
+	font: inherit;
+}
+
+.cs-form input:focus,
+.cs-input:focus {
+	outline: 2px solid var(--cs-color);
+	outline-offset: -1px;
+}
+
+.cs-btn {
+	width: 100%;
+	padding: 10px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--cs-color);
+	color: var(--cs-on-color);
+	font: inherit;
+	font-weight: 700;
+	cursor: pointer;
+}
+
+.cs-error {
+	margin: 0 0 10px;
+	color: #dc2626;
+	font-size: 12px;
+}
+
+.cs-footer {
+	display: flex;
+	gap: 8px;
+	align-items: flex-end;
+	padding: 10px;
+	border-top: 1px solid var(--cs-border);
+	background: var(--cs-bg);
+}
+
+.cs-input {
+	flex: 1;
+	max-height: 96px;
+	padding: 9px 11px;
+	border: 1px solid var(--cs-border);
+	border-radius: 8px;
+	background: #fff;
+	color: var(--cs-text);
+	font: inherit;
+	resize: none;
+}
+
+.cs-send {
+	flex-shrink: 0;
+	width: 40px;
+	height: 40px;
+	border: 0;
+	border-radius: 8px;
+	background: var(--cs-color);
+	color: var(--cs-on-color);
+	cursor: pointer;
+	line-height: 0;
+}
+
+.cs-send svg { width: 18px; height: 18px; margin: auto; fill: currentColor; }
+
+/* فلش ارسال باید در چیدمان راست‌به‌چپ آینه شود. */
+[dir="rtl"] .cs-send svg { transform: scaleX(-1); }
+.cs-send:disabled { opacity: .5; cursor: default; }
+
+/* موبایل: پنجره تمام‌صفحه */
+@media (max-width: 480px) {
+	.cs-panel {
+		inset: 0;
+		width: 100%;
+		max-width: 100%;
+		height: 100%;
+		max-height: 100%;
+		border-radius: 0;
+	}
+
+	.cs-pos-right .cs-panel,
+	.cs-pos-left .cs-panel { right: 0; left: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.cs-launcher { transition: none; }
+}
